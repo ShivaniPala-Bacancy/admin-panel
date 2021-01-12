@@ -1,0 +1,13 @@
+.RegistrationForm{
+    margin: 20px auto;
+    width: 50%;
+    box-shadow: 0 2px 3px rgb(168, 162, 162);
+    border-top: 50px solid rgb(241, 103, 10);
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: rgb(58, 53, 53)
+}
+.Header{
+    text-align: center;
+    color: rgb(250, 246, 1);
+}

@@ -1,0 +1,19 @@
+.Button{
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    display : flex;
+    align-items: center;
+    justify-content: center;
+}
+.AddMore{
+    float: right;
+    margin-right: 25%;
+    width: 150px;
+}
+.Back{
+    float: left;
+    margin-left: 25%;
+    
+
+}
