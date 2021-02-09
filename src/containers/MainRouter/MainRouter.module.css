@@ -1,0 +1,12 @@
+
+.Logo{
+    height: 100px;
+    width: 20%;
+    float: left;
+    margin-bottom: 0px;
+}
+.nav{
+    background-color: rgb(211, 192, 192);;
+    height: 60px;
+    margin-bottom: 70px;
+}

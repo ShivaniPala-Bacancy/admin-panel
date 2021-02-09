@@ -1,20 +1,23 @@
 import React from 'react';
 import styles from './FormElements.module.css'
-import DayPickerInput from 'react-day-picker/DayPickerInput';
+import DayPicker from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
 const FormElements =(props) => {
     let formElement= null;
     const inputClasses= [styles.FormElements]
-    
     switch(props.elementType){
         case('date'):
         let date= new Date();
-            formElement=<DayPickerInput
-                onDayChange={props.changed}
-                value={props.value}
-                
-                />;
+            formElement=
+                <div>
+                    <DayPicker
+                        onDayChange={props.changed}
+                        value={props.value}
+                        />
+                        <br/>
+                    {props.touched ? (props.invalid ? <span className={styles.error}>{props.errorMsg}</span>  : null)  : null}
+                </div>
             break;
         case('input'):
             formElement= 

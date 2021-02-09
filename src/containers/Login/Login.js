@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
-import {Registrations} from '../../hoc/Registrations'
+import {Link, withRouter} from 'react-router-dom'
 import CreateForm from  '../../components/CreateForm/CreateForm'
 import Button from '../../UI/Button/Button'
 import styles from './Login.module.css'
@@ -50,12 +49,21 @@ class Login extends Component{
         let password= this.state.loginFormElements["password"].value;
         let matchedObject= {}
         let id= null;
-        matchedObject = Registrations.find(r => {
-            return r.email === email && r.password === password;
+        let registeredUsers= JSON.parse(localStorage.getItem("user_information"));
+        if(registeredUsers == null){
+            alert("No Users Registered!!!");
+            return;
+        }
+        matchedObject = registeredUsers.find(r => {
+            return r.personalDetails.email === email && r.personalDetails.password === password;
         }
         )        
         if(matchedObject !== undefined){
-            id = matchedObject.id;
+            id = matchedObject.personalDetails.id;
+            
+            localStorage.setItem("loggedInState", JSON.stringify(true));
+            localStorage.setItem("loggedInId", JSON.stringify(id));
+            this.props.login(true, id);
             alert("Successfully Logged In")
             this.props.history.push("/" + id);
         }
@@ -118,4 +126,4 @@ class Login extends Component{
         )
     }
 }
-export default Login
+export default withRouter(Login);

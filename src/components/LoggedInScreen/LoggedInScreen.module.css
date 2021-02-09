@@ -1,8 +1,26 @@
 .LogOut{
-    margin-left: auto;
-    margin-right: auto;
-    align-items: center;
-    display : flex;
-    align-items: center;
-    justify-content: center;
+    margin-left: 40%;
+    margin-right: 30px;
+    /* align-items: center; */
+    /* display : flex; */
+    /* justify-content: center; */
+}
+.ChangePassword{
+    margin-left: 10px;
+    margin-right: 10px;
+    /* align-items: center; */
+    /* display : flex; */
+    /* justify-content: center; */
+    width: auto;
+}
+
+.Logo{
+    height: 100px;
+    width: 20%;
+    float: left;
+    margin-bottom: 0px;
+}
+.nav{
+    background-color: gray;
+    margin-bottom: 70px;
 }

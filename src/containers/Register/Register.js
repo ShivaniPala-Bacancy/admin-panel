@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import CreateForm from '../../components/CreateForm/CreateForm'
-import {Registrations, Id} from '../../hoc/Registrations'
 import Button from '../../UI/Button/Button'
 import styles from './Register.module.css'
 
@@ -9,8 +8,9 @@ class Register extends Component{
         super(props);
         this.state={
             personalFormIsValid: false,
-            educationalFormIsValid: false,
+            educationalFormIsValid: true,
             showPersonalFrom: true,
+            showEducationForm: false,
             multipleEducationalInformation: [],
             personalInformation: {
                 firstName: {
@@ -199,6 +199,7 @@ class Register extends Component{
                         value: '',
                         validation:{
                             required: true,
+                            endDate: true
                         }, 
                         valid: false,
                         touched: false,
@@ -221,6 +222,12 @@ class Register extends Component{
             if(rules.required){
                 isValidObject.isValid = value.trim() !== '' && isValidObject.isValid;
                 isValidObject.errorMessage = "Required"
+            }
+            if(rules.endDate){
+                let startDate = new Date(this.state.educationalInformation.startDate.value);
+                let endDate= new Date(value);
+                isValidObject.isValid= (endDate > startDate) && isValidObject.isValid;
+                isValidObject.errorMessage = "End Date should be more than start date"
             }
             if(rules.length){
                 isValidObject.isValid= value.length === rules.length && isValidObject.isValid; 
@@ -247,14 +254,24 @@ class Register extends Component{
         return isValidObject;
     }
     submitFormHandler = () => {   
-        let education =[
-            ...this.state.multipleEducationalInformation
-        ];
+        let education =[];
+        if(this.state.multipleEducationalInformation.length !== 0){
+            education =[
+                ...this.state.multipleEducationalInformation
+            ];
+        }
         let educationalFormData= {};
         for(let key in this.state.educationalInformation) {
-            educationalFormData[key] = this.state.educationalInformation[key].value;
+            //check if form is filled
+            if(this.state.educationalInformation[key].valid){
+                educationalFormData[key] = this.state.educationalInformation[key].value;
+            }
+            
         }
-        education.push(educationalFormData);
+        if(Object.keys(educationalFormData).length !== 0){
+            education.push(educationalFormData);
+        }
+        
         
         let registeredObject= {
             ...this.state.personalInformation,
@@ -262,9 +279,24 @@ class Register extends Component{
         for(let key in registeredObject){
             registeredObject[key] = registeredObject[key].value
         }
-        registeredObject.education= education
         registeredObject.id= Math.random().toString(36).substr(2, 9);
-        Registrations.push(registeredObject)
+        let userArray = JSON.parse(localStorage.getItem("user_information"));
+        if(userArray){
+            for(let user in userArray)
+            {
+                    if(registeredObject.email === userArray[user].personalDetails.email){
+                        alert("This user is already registered!!!!");
+                        return;
+                    }
+            }
+            userArray.push({personalDetails: registeredObject, educationalDetails: education})
+            localStorage.setItem("user_information", JSON.stringify(userArray));
+        }
+        else{
+            userArray = {personalDetails: registeredObject, educationalDetails: education};
+            localStorage.setItem("user_information", JSON.stringify([userArray]));
+        }
+
         alert("Registered Successfully!!!");
         this.props.history.push("/login")
     }
@@ -316,20 +348,41 @@ class Register extends Component{
         this.setState({educationalInformation: updatedEducation, educationalFormIsValid: formIsValid});
     }
     addEducationHandler = () => {
+        this.setState({showEducationForm: true, educationalFormIsValid: false});
         let educationalInformation ={
             ...this.state.educationalInformation
         }
+        //check if all fields are filled
         let obj= {}
         for(let key in educationalInformation){
-            obj[key] = educationalInformation[key].value;
+            if(educationalInformation[key].valid){
+                obj[key] = educationalInformation[key].value;
+            }
         }
-        this.setState({multipleEducationalInformation: [...this.state.multipleEducationalInformation, obj]});
+        if(Object.keys(obj).length !== 0){
+            this.setState({multipleEducationalInformation: [...this.state.multipleEducationalInformation, obj]});
+        }
+        else{return;}
+        
         for(let key in educationalInformation){
             educationalInformation[key].value = "";
-            educationalInformation[key].valid= "false";
+            educationalInformation[key].valid= false;
+            educationalInformation[key].touched= false;
         }
         this.setState({educationalInformation: educationalInformation});
 
+    }
+    removeEducationHandler =() => {
+        let educationalInformation ={
+            ...this.state.educationalInformation
+        }
+        
+        for(let key in educationalInformation){
+            educationalInformation[key].value = "";
+            educationalInformation[key].valid= false;
+            educationalInformation[key].touched= false;
+        }
+        this.setState({educationalInformation: educationalInformation, showEducationForm: false, educationalFormIsValid: true});
     }
     nextPageHandler =() =>{
         this.setState({showPersonalFrom: false})
@@ -342,16 +395,20 @@ class Register extends Component{
         if(!this.state.showPersonalFrom) {
             showForm= 
             <div>
-                <CreateForm 
-                    header="Registration Form"
-                    formElements={this.state.educationalInformation}
-                    inputChangedHandler={(event, id) => this.educationalInputChangedHandler(event, id)} 
-                    dateChangeHandler={(id) => this.dateChangeHandler(id)}/>
-                <Button btnClass={styles.AddMore} disabled={!this.state.educationalFormIsValid} clicked={this.addEducationHandler}>+ Add More</Button>
+                {this.state.showEducationForm? 
+                    <CreateForm 
+                        header="Registration Form"
+                        formElements={this.state.educationalInformation}
+                        inputChangedHandler={(event, id) => this.educationalInputChangedHandler(event, id)} 
+                        dateChangeHandler={(id) => this.dateChangeHandler(id)}/>
+                        : null 
+                }
                 <Button btnClass={styles.Back} clicked={this.backPageHandler}>Back</Button>
+                <Button btnClass={styles.Remove} clicked={this.removeEducationHandler} disabled={!this.state.showEducationForm} >Remove</Button>
+                <Button btnClass={styles.AddMore} clicked={this.addEducationHandler} disabled={!this.state.educationalFormIsValid} >+ Add More</Button>
                 <br />
                 <br />
-                <Button btnClass={styles.Button} clicked={this.submitFormHandler} disabled={!this.state.educationalFormIsValid}>Submit</Button>
+                <Button btnClass={styles.Submit} clicked={this.submitFormHandler} disabled={!this.state.educationalFormIsValid}>Submit</Button>
             </div>
         }
         else{
@@ -361,7 +418,7 @@ class Register extends Component{
                     header="Registration Form"
                     formElements={this.state.personalInformation}
                     inputChangedHandler={(event, id) => this.personalInputChangedHandler(event, id)} />
-                <Button btnClass={styles.Button} clicked={this.nextPageHandler} disabled={!this.state.personalFormIsValid}>Next</Button>
+                <Button btnClass={styles.Next} clicked={this.nextPageHandler} disabled={!this.state.personalFormIsValid}>Next</Button>
             </div>
         }
         return(

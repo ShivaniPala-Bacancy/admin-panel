@@ -1,19 +1,21 @@
-.Button{
-    margin-left: auto;
-    margin-right: auto;
-    align-items: center;
-    display : flex;
-    align-items: center;
-    justify-content: center;
+.Submit{
+    margin-left: 40%;
+    margin-right: 40%;
 }
 .AddMore{
-    float: right;
-    margin-right: 25%;
     width: 150px;
+    float: right;
+    margin-right: 25%;  
 }
 .Back{
     float: left;
-    margin-left: 25%;
-    
-
+    margin-left: 420px;  
+}
+.Remove{
+    margin-top: 0px;
+    margin-left: 29%;
+}
+.Next{
+    float: right;
+    margin-right: 25%;   
 }
