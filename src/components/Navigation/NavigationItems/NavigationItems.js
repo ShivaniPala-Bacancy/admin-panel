@@ -3,6 +3,7 @@ import NavigationItem from '../NavigationItems/NavigationItem/NavigationItem'
 import styles from './NavigationItems.module.css'
 import {Link} from 'react-router-dom';
 import Logo from '../../../UI/Logo/Logo'
+import {connect} from 'react-redux';
 
 class NavigationItems extends Component{
     render(){
@@ -43,11 +44,12 @@ class NavigationItems extends Component{
             {navItems}
         </div>
     )
-    }
-    
-        
-        
-        
-
+    }    
 }
-export default NavigationItems;
+const mapStateToProps = state => {
+    return {
+        loggedIn: state.loggedIn,
+        loggedInId: state.loggedInId
+    }
+}
+export default connect(mapStateToProps)(NavigationItems);

@@ -1,16 +1,9 @@
 import React, {Component} from 'react'
-import {Link, withRouter} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 import styles from './LoggedInScreen.module.css'
 import Button from '../../UI/Button/Button'
 
 class LoggedInScreen extends Component{
-    logOut= () => {
-        
-        localStorage.setItem("loggedInState", JSON.stringify(false));
-        localStorage.setItem("loggedInId", null);
-        this.props.login(false, null);
-        this.props.history.push("/");
-    }
     
     render(){
         let id= this.props.match.params.id;

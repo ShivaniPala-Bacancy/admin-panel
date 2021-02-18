@@ -13,52 +13,30 @@ import styles from './MainRouter.module.css'
 
 class MainRouter extends Component {
 
-    state = {
-        loggedIn:JSON.parse(localStorage.getItem("loggedInState")),
-        loggedInId:JSON.parse(localStorage.getItem("loggedInId")),
-    }
-    loginStateChange = (login, id) => {
-        this.setState({loggedIn:login, loggedInId:id});
-    }
 
     render() {
-        let nav;
-        if(this.state.loggedIn){
-            nav =(
-            <nav className={styles.nav}>
-                <NavigationItems loggedIn={true} loggedInId={this.state.loggedInId}/>
-            </nav>
-            )
-        }
-        else{
-            nav=(
-                <nav className={styles.nav}>
-                    <NavigationItems loggedIn={false} loggedInId={this.state.loggedInId} />
-                </nav>
-            )
-        }
         return (
             <div>
-                {nav}
+                
+        <nav className={styles.nav}>
+            <NavigationItems />
+        </nav>
                 <main>
                     {this.props.children}
                 </main>
                 <Switch>
-                    <Route path="/login" render={() => <Login login={this.loginStateChange} />} />
+                    <Route path="/login" component={Login} />
                     <Route path="/register" component={Register} />
                     <Route path='/user-details/:id' exact component={UserDetails} />
                     <Route path='/user-education/:id' exact component={UserEducation} />
                     <Route path='/edit-education/:id' exact component={EditEducation} />
-                    <Route path='/change-password/:id'  render={() => <ChangePassword login={this.loginStateChange} />} />
-                    <Route path='/:id' render={() => <LoggedInScreen login={this.loginStateChange} />} />
-                    <Route path='/' exact render={() => <HomePage login={this.loginStateChange} /> } />
+                    <Route path='/change-password/:id' exact component={ChangePassword} />
+                    <Route path='/:id' exct component={LoggedInScreen} />
+                    <Route path='/' exact component={HomePage} />
                 </Switch>
 
             </div>
         )
     }
-
-
 }
-
 export default MainRouter

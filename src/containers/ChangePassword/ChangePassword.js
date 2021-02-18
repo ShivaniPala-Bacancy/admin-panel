@@ -3,6 +3,8 @@ import Button from '../../UI/Button/Button'
 import {withRouter} from 'react-router-dom'
 import CreateForm from '../../components/CreateForm/CreateForm';
 import styles from './ChangePassword.module.css'
+import {connect} from 'react-redux'
+import * as actions from '../../store/actions/index'
 
 class ChangePassword extends Component{
     
@@ -97,11 +99,8 @@ class ChangePassword extends Component{
                 }
             }
             alert("Password changed!!!");
-            
-        localStorage.setItem("loggedInState", JSON.stringify(false));
-        localStorage.setItem("loggedInId", null);
-            this.props.login(false, null);
-            this.props.history.push("/");
+        this.props.onLogout();
+        this.props.history.push("/");
         }
     }
     
@@ -121,4 +120,10 @@ class ChangePassword extends Component{
     }
 }
 
-export default withRouter(ChangePassword);
+const mapDispatchToProps = dispatch => {
+    return{
+        onLogout: () => dispatch(actions.logout())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(withRouter(ChangePassword));

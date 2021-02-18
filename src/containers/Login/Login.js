@@ -3,6 +3,8 @@ import {Link, withRouter} from 'react-router-dom'
 import CreateForm from  '../../components/CreateForm/CreateForm'
 import Button from '../../UI/Button/Button'
 import styles from './Login.module.css'
+import {connect} from 'react-redux'
+import * as actions from '../../store/actions/index'
 
 class Login extends Component{
     constructor(props){
@@ -60,10 +62,7 @@ class Login extends Component{
         )        
         if(matchedObject !== undefined){
             id = matchedObject.personalDetails.id;
-            
-            localStorage.setItem("loggedInState", JSON.stringify(true));
-            localStorage.setItem("loggedInId", JSON.stringify(id));
-            this.props.login(true, id);
+            this.props.onLogin(id);
             alert("Successfully Logged In")
             this.props.history.push("/" + id);
         }
@@ -126,4 +125,18 @@ class Login extends Component{
         )
     }
 }
-export default withRouter(Login);
+
+const mapStateToProps = state => {
+    return {
+        loggedIn: state.loggedIn,
+        loggedInId: state.loggedInId
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return{
+        onLogin: (id) => dispatch(actions.login(id))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
