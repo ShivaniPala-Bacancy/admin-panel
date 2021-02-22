@@ -76,6 +76,8 @@ class UserEducation extends Component{
                     <td className={styles.Td}>PERCENTAGE</td>
                     <td className={styles.Td}>START DATE</td>
                     <td className={styles.Td}>END DATE</td>
+                    <td className={styles.Td}>EDIT</td>
+                    <td className={styles.Td}>DELETE</td>
                 </tr>
                 </thead>
                 

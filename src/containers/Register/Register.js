@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import CreateForm from '../../components/CreateForm/CreateForm'
 import Button from '../../UI/Button/Button'
 import styles from './Register.module.css'
+import tableStyles from '../../components/UserDetails/UserDetails.module.css'
+import {Link} from 'react-router-dom'
 
 class Register extends Component{
     constructor(props){
@@ -102,7 +104,7 @@ class Register extends Component{
                     },
                     value: '',
                     validation:{
-                        password: true,
+                        // password: true,
                         required: true,
                     }, 
                     valid: false,
@@ -390,8 +392,44 @@ class Register extends Component{
     backPageHandler =() => {
         this.setState({showPersonalFrom: true})
     }
+    
+    deleteEducationHandler = (index) => {
+        let confirmDeletion = window.confirm("Are you sure you want to delete?");
+        if(confirmDeletion){
+            let updatedEducation= [
+                ...this.state.multipleEducationalInformation
+            ]
+            updatedEducation.splice(index, 1);
+            this.setState({multipleEducationalInformation: updatedEducation})
+        }
+        else{
+            return;
+        }
+    }
+    
+    editEducationHandler =(index) => {
+        let preFilledEducation = {
+            ...this.state.educationalInformation
+        }
+        Object.keys(this.state.multipleEducationalInformation[index]).forEach(e => {
+                preFilledEducation[e].value= this.state.multipleEducationalInformation[index][e];
+                preFilledEducation[e].valid= true
+                
+            }
+            )
+            
+            let updatedEducation= [
+                ...this.state.multipleEducationalInformation
+            ]
+            const newList = updatedEducation.splice(index, 1);
+            this.setState({multipleEducationalInformation: updatedEducation})
+        
+        this.setState({educationalInformation: preFilledEducation, educationalFormIsValid: true})
+    
+    }
     render(){
         let showForm = null;
+        let userList;
         if(!this.state.showPersonalFrom) {
             showForm= 
             <div>
@@ -409,7 +447,34 @@ class Register extends Component{
                 <br />
                 <br />
                 <Button btnClass={styles.Submit} clicked={this.submitFormHandler} disabled={!this.state.educationalFormIsValid}>Submit</Button>
+                
             </div>
+            let userTable = this.state.multipleEducationalInformation.map((e, index) => {
+                return(
+                            <tr key={index}>
+                                <td className={tableStyles.Td}>{e.schoolName}</td>
+                                <td className={tableStyles.Td}>{e.course}</td>
+                                <td className={tableStyles.Td}>{e.percentage}</td>
+                                <td className={tableStyles.Td}>{e.startDate}</td>
+                                <td className={tableStyles.Td}>{e.endDate}</td>
+                                <td className={styles.Td}>
+                                    <Button clicked={() => this.editEducationHandler(index)}>EDIT</Button>
+                                </td>
+                                    
+                                <td className={styles.Td}><Button clicked={() => this.deleteEducationHandler(index)}>DELETE</Button></td>
+                            </tr>
+                        )
+                    })
+                
+                
+            
+            userList =(
+                <table  className={tableStyles.Table}>
+                    <tbody className={tableStyles.Tr}>
+                        {userTable}
+                    </tbody>
+                </table>
+            )
         }
         else{
             showForm=
@@ -420,10 +485,17 @@ class Register extends Component{
                     inputChangedHandler={(event, id) => this.personalInputChangedHandler(event, id)} />
                 <Button btnClass={styles.Next} clicked={this.nextPageHandler} disabled={!this.state.personalFormIsValid}>Next</Button>
             </div>
+            
+        // ////////////////////////////////////////
+            
         }
+
+        
+        // ////////////////////////////////////////
         return(
             <div>
                 {showForm}
+                {userList}
             </div>
         )
     }
